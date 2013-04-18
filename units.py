@@ -36,9 +36,3 @@ class Unit( pygame.sprite.Sprite):
 			self.attack = 10
 			self.defense = 15
 			self.arange = 1
-			
-	def update(self):
-		##if self.attacking, play sprite animation
-		return
-	##def _Attack(self):
-		##
