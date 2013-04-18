@@ -52,3 +52,8 @@ superior durability in a stand up fight though more play testing is needed. Curr
 re-run the code to play multiple times and is an issue to be addressed soon. Also a splash screen and
 conversion of the code to make use of game_modes is also an area to address in the near future along
 with an accessible information screen.
+
+Version 3:
+
+Game Code updated to a game state system. Combat system momentarily removed so that a grid and unit control
+system can be implemented. Once implemented, combat will be reworked to utilize the new systems.
