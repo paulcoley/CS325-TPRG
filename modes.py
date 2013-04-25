@@ -244,6 +244,11 @@ class UnitSelectScreen( GameMode ):
             self.player = 2
         elif collides_down_and_up(self.knight_rect) and self.player == 2:
             self.switch_to_mode( 'playing' )
+
+    def key_down( self, event ):
+        ## By default, quit when the escape key is pressed.
+        if event.key == K_ESCAPE:
+            self.quit()
         
 
     def draw( self, screen ):
@@ -277,6 +282,11 @@ class GamePlayScreen( GameMode ):
         
         def collides_down_and_up( r ):
             return r.collidepoint( self.mouse_down_pos ) and r.collidepoint( event.pos )
+
+    def key_down( self, event ):
+        ## By default, quit when the escape key is pressed.
+        if event.key == K_ESCAPE:
+            self.quit()
 
     def draw(self, screen):
         screen.fill((255, 255, 255))
