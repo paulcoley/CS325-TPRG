@@ -1,5 +1,5 @@
 {
-    "screen_size": [ 800, 400 ],
+    "screen_size": [ 800, 800 ],
     "window_title": "Shadows of the Knight",
     "fps": 60,
     "splash_screen": "splash_screen.jpg",

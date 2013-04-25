@@ -261,13 +261,13 @@ class UnitSelectScreen( GameMode ):
         pygame.display.flip()
 
 class GamePlayScreen( GameMode ):
-    def __init__( self ):
+    def __init__( self, screen ):
         self.turn = 1
         self.font = pygame.font.Font(None, 26)
         self.infotxt = self.font.render("Player " + str(self.turn) + "'s Turn",1,(10,10,10))
         self.player1units = {}
         self.player2units = {}
-        self.grid = Grid(8, 4)
+        self.grid = Grid(screen)
         self.imagedict = {'Archer': load_onlyimage( 'Archer_single.gif', -1 ),
                           'Cavalier': load_onlyimage( 'Cavalier_single.gif', -1 ),
                           'Knight': load_onlyimage( 'Knight_single.gif', -1 ),

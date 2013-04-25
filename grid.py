@@ -3,15 +3,15 @@ from utils import *
 from pygame.locals import *
 
 class Grid( object ):
-    def __init__( self, width, height ):
-        self.gridwidth = width
-        self.gridheight = height
-        self.tilewidth = 800/width;
-        self.tileheight = 400/height;
+    def __init__( self, screen ):
+        self.tilewidth = 100
+        self.tileheight = 100
+        self.gridwidth = screen.get_width()/self.tilewidth
+        self.gridheight = screen.get_height()/self.tileheight
         self.black = 0, 0, 0
         self.tilelist_set({})
-        for x in range(0, width):
-            for y in range(0, height):
+        for x in range(0, self.gridwidth):
+            for y in range(0, self.gridheight):
                 self.tilelist_get().update( {(x,y): Tile()} )
 
     def tilelist_get( self ):
@@ -28,10 +28,10 @@ class Grid( object ):
                 self.tilelist_get()[(x, y)].draw(screen, (self.tilewidth*x, self.tileheight*y), imagedict)
         
         for x in range (1, self.gridwidth):
-            pygame.draw.line(screen, self.black, (self.tilewidth*x,0), (self.tilewidth*x, 400))
+            pygame.draw.line(screen, self.black, (self.tilewidth*x,0), (self.tilewidth*x, screen.get_height()))
 
         for y in range (1, self.gridheight):
-            pygame.draw.line(screen, self.black, (0,self.tileheight*y), (800, self.tileheight*y))
+            pygame.draw.line(screen, self.black, (0,self.tileheight*y), (screen.get_width(), self.tileheight*y))
 
 class Tile( object ):
     def __init__( self ):
