@@ -22,7 +22,11 @@ class Grid( object ):
 
     tilelist = property(tilelist_get, tilelist_set)
 
-    def draw(self, screen):
+    def draw(self, screen, imagedict):
+        for x in range (0, self.gridwidth):
+            for y in range (0, self.gridheight):
+                self.tilelist_get()[(x, y)].draw(screen, (self.tilewidth*x, self.tileheight*y), imagedict)
+        
         for x in range (1, self.gridwidth):
             pygame.draw.line(screen, self.black, (self.tilewidth*x,0), (self.tilewidth*x, 400))
 
@@ -31,7 +35,7 @@ class Grid( object ):
 
 class Tile( object ):
     def __init__( self ):
-        self.terrain_set('default')
+        self.terrain_set('Plains')
         self.occupied_set(False)
 
     def terrain_get( self ):
@@ -49,3 +53,6 @@ class Tile( object ):
         self._occupied = value
 
     occupied = property(occupied_get, occupied_set)
+
+    def draw( self, screen, xy, imagedict):
+        screen.blit(imagedict[self.terrain], xy)

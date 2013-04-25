@@ -260,9 +260,15 @@ class GamePlayScreen( GameMode ):
         self.turn = 1
         self.font = pygame.font.Font(None, 26)
         self.infotxt = self.font.render("Player " + str(self.turn) + "'s Turn",1,(10,10,10))
-        self.player1units = None
-        self.player2units = None
-        self.grid = Grid(10, 4)
+        self.player1units = {}
+        self.player2units = {}
+        self.grid = Grid(8, 4)
+        self.imagedict = {'Archer': load_onlyimage( 'Archer_single.gif', -1 ),
+                          'Cavalier': load_onlyimage( 'Cavalier_single.gif', -1 ),
+                          'Knight': load_onlyimage( 'Knight_single.gif', -1 ),
+                          'Forest': load_onlyimage( 'forest.png'),
+                          'Plains': load_onlyimage( 'plains.png'),
+                          'Mountain': load_onlyimage( 'mountain.png')}
 
     def mouse_button_down( self, event ):
         self.mouse_down_pos = event.pos
@@ -274,9 +280,9 @@ class GamePlayScreen( GameMode ):
 
     def draw(self, screen):
         screen.fill((255, 255, 255))
+        self.grid.draw(screen, self.imagedict)
         self.infotxt = self.font.render("Player " + str(self.turn) + "'s Turn",1,(10,10,10))
         screen.blit(self.infotxt, (50, 30))
-        self.grid.draw(screen)
         pygame.display.flip()
 
 
