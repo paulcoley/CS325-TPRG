@@ -176,8 +176,8 @@ class StartScreen( GameMode ):
         GameMode.__init__( self )
         
         self.image, _ = load_image( 'start_screen.png' )
-        self.start, self.start_rect = load_image( 'start.png', -1 )
-        self.quit, self.quit_rect = load_image( 'quit.png', -1 )
+        self.start, self.start_rect = load_image_alpha( 'start.png' )
+        self.quit, self.quit_rect = load_image_alpha( 'quit.png' )
         self.start_rect.topleft = ( 271, 30 )
         self.quit_rect.topleft = ( 255, 150 )
         
