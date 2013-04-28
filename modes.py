@@ -1,6 +1,7 @@
 import pygame
 from utils import *
 from grid import *
+from units import *
 from pygame.locals import *
 
 class ModeManager( object ):
@@ -195,7 +196,7 @@ class StartScreen( GameMode ):
             self.quit()
         
         if collides_down_and_up( self.start_rect ):
-            self.switch_to_mode( 'unitselect' )
+            self.switch_to_mode( 'playing' )
     
     def draw( self, screen ):
         ## Draw the HUD.
@@ -203,77 +204,42 @@ class StartScreen( GameMode ):
         screen.blit( self.start, ( 271, 30 ) )
         screen.blit( self.quit, ( 255, 150 ) )
         pygame.display.flip()
-		
-class UnitSelectScreen( GameMode ):
-    def __init__( self ):
-        ## Initialize the superclass.
-        GameMode.__init__( self )
-        
-	self.player = 1
-	self.cavalier, self.cavalier_rect = load_image( 'Cavalier_single.gif', -1 )
-	self.archer, self.archer_rect = load_image( 'Archer_single.gif', -1 )
-	self.knight, self.knight_rect = load_image( 'Knight_single.gif', -1 )
-	self.knight_rect.topleft = (200, 200)
-	self.archer_rect.topleft = (300, 200)
-	self.cavalier_rect.topleft = (400, 200)
-	
-	self.font = pygame.font.Font(None, 26)
-        self.infotxt = self.font.render("Player " + str(self.player) + " please click the unit you would like to have:",1,(10,10,10))
-        
-        self.mouse_down_pos = (-1,-1)
-    
-    def mouse_button_down( self, event ):
-        self.mouse_down_pos = event.pos
-    
-    def mouse_button_up( self, event ):
-        
-        def collides_down_and_up( r ):
-            return r.collidepoint( self.mouse_down_pos ) and r.collidepoint( event.pos )
-
-        if collides_down_and_up(self.archer_rect) and self.player == 1:
-            self.player = 2
-        elif collides_down_and_up(self.archer_rect) and self.player == 2:
-            self.switch_to_mode( 'playing' )
-            
-        if collides_down_and_up(self.cavalier_rect) and self.player == 1:
-            self.player = 2
-        elif collides_down_and_up(self.cavalier_rect) and self.player == 2:
-            self.switch_to_mode( 'playing' )
-            
-        if collides_down_and_up(self.knight_rect) and self.player == 1:
-            self.player = 2
-        elif collides_down_and_up(self.knight_rect) and self.player == 2:
-            self.switch_to_mode( 'playing' )
-
-    def key_down( self, event ):
-        ## By default, quit when the escape key is pressed.
-        if event.key == K_ESCAPE:
-            self.quit()
-        
-
-    def draw( self, screen ):
-        screen.fill((255, 255, 255))
-        self.infotxt = self.font.render("Player " + str(self.player) + " please click the unit you would like to have:",1,(10,10,10))
-        screen.blit(self.infotxt, (50, 30))
-        screen.blit(self.cavalier, (200, 200))
-        screen.blit(self.archer, (300, 200))
-        screen.blit(self.knight, (400, 200))
-        pygame.display.flip()
 
 class GamePlayScreen( GameMode ):
     def __init__( self, screen ):
         self.turn = 1
         self.font = pygame.font.Font(None, 26)
         self.infotxt = self.font.render("Player " + str(self.turn) + "'s Turn",1,(10,10,10))
-        self.player1units = {}
-        self.player2units = {}
-        self.grid = Grid(screen)
         self.imagedict = {'Archer': load_onlyimage( 'Archer_single.gif', -1 ),
                           'Cavalier': load_onlyimage( 'Cavalier_single.gif', -1 ),
                           'Knight': load_onlyimage( 'Knight_single.gif', -1 ),
                           'Forest': load_onlyimage( 'forest.png'),
                           'Plains': load_onlyimage( 'plains.png'),
                           'Mountain': load_onlyimage( 'mountain.png')}
+        self.archerclass = UnitType( 'Archer', 2, 3, 50, 1, 1)
+        self.cavalierclass = UnitType( 'Cavalier', 3, 1, 75, 3, 1)
+        self.knightclass = UnitType( 'Knight', 1, 1, 100, 3, 3)
+        self.player1units = {'1K1': Unit(self.knightclass, 2, 0),
+                             '1K2': Unit(self.knightclass, 3, 0),
+                             '1K3': Unit(self.knightclass, 4, 0),
+                             '1K4': Unit(self.knightclass, 5, 0),
+                             '1A1': Unit(self.archerclass, 2, 1),
+                             '1A2': Unit(self.archerclass, 3, 1),
+                             '1A3': Unit(self.archerclass, 4, 1),
+                             '1C1': Unit(self.cavalierclass, 2, 2),
+                             '1C2': Unit(self.cavalierclass, 3, 2)}
+        self.player2units = {'2K1': Unit(self.knightclass, 2, 7),
+                             '2K2': Unit(self.knightclass, 3, 7),
+                             '2K3': Unit(self.knightclass, 4, 7),
+                             '2K4': Unit(self.knightclass, 5, 7),
+                             '2A1': Unit(self.archerclass, 2, 6),
+                             '2A2': Unit(self.archerclass, 3, 6),
+                             '2A3': Unit(self.archerclass, 4, 6),
+                             '2C1': Unit(self.cavalierclass, 2, 5),
+                             '2C2': Unit(self.cavalierclass, 3, 5)}
+        self.grid = Grid(screen)
+        self.currentlySelectedUnit = None
+        self.currentPlayer = 1
 
     def mouse_button_down( self, event ):
         self.mouse_down_pos = event.pos
@@ -282,6 +248,16 @@ class GamePlayScreen( GameMode ):
         
         def collides_down_and_up( r ):
             return r.collidepoint( self.mouse_down_pos ) and r.collidepoint( event.pos )
+
+        for x in self.player1units:
+            if collides_down_and_up(self.player1units[x].position_rect):
+                self.currentlySelectedUnit = x
+                print x
+
+        for x in self.player2units:
+            if collides_down_and_up(self.player2units[x].position_rect):
+                self.currentlySelectedUnit = x
+                print x
 
     def key_down( self, event ):
         ## By default, quit when the escape key is pressed.
@@ -292,6 +268,10 @@ class GamePlayScreen( GameMode ):
         screen.fill((255, 255, 255))
         self.grid.draw(screen, self.imagedict)
         self.infotxt = self.font.render("Player " + str(self.turn) + "'s Turn",1,(10,10,10))
+        for x in self.player1units:
+            self.player1units[x].draw(screen, self.imagedict)
+        for x in self.player2units:
+            self.player2units[x].draw(screen, self.imagedict)
         screen.blit(self.infotxt, (50, 30))
         pygame.display.flip()
 

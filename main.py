@@ -31,7 +31,6 @@ def main():
     
     ## A dummy "select" mode.
     modes.register_mode( 'start', StartScreen() )
-    modes.register_mode( 'unitselect', UnitSelectScreen() )
     modes.register_mode( 'playing', GamePlayScreen(screen) )
     
     ## Start with the splash screen.

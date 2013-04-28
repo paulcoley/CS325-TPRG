@@ -68,11 +68,28 @@ class UnitType( object ):
         defense = property(defense_get, defense_set)
 
 class Unit( pygame.sprite.Sprite):
-	def __init__(self, utype, xy, owner):
+	def __init__(self, utype, x, y):
                 pygame.sprite.Sprite.__init__(self)
 		self.currentHealth = utype.health
 		self.image = utype.image
-		x, y = xy
+		self.position_set((x*100,y*100))
+		self.position_rect_set(Rect(self.position_get(), (100, 100)))
+
+        def position_get( self ):
+                return self._position
+
+        def position_set( self, value ):
+                self._position = value
+
+        position = property(position_get, position_set)
+
+        def position_rect_get( self ):
+                return self._position_rect
+
+        def position_rect_set( self, value ):
+                self._position_rect = value
+
+        position_rect = property(position_rect_get, position_rect_set)
 
 	def draw(self, screen, imagedict):
-                screen.blit(imagedict[self.image], (x, y))
+                screen.blit(imagedict[self.image], self.position)
