@@ -216,30 +216,34 @@ class GamePlayScreen( GameMode ):
                           'Forest': load_onlyimage( 'forest.png'),
                           'Plains': load_onlyimage( 'plains.png'),
                           'Mountain': load_onlyimage( 'mountain.png')}
-        self.archerclass = UnitType( 'Archer', 2, 3, 50, 1, 1)
-        self.cavalierclass = UnitType( 'Cavalier', 3, 1, 75, 3, 1)
-        self.knightclass = UnitType( 'Knight', 1, 1, 100, 3, 3)
-        self.player1units = {'1K1': Unit(self.knightclass, 2, 0),
-                             '1K2': Unit(self.knightclass, 3, 0),
-                             '1K3': Unit(self.knightclass, 4, 0),
-                             '1K4': Unit(self.knightclass, 5, 0),
-                             '1A1': Unit(self.archerclass, 2, 1),
-                             '1A2': Unit(self.archerclass, 3, 1),
-                             '1A3': Unit(self.archerclass, 4, 1),
-                             '1C1': Unit(self.cavalierclass, 2, 2),
-                             '1C2': Unit(self.cavalierclass, 3, 2)}
-        self.player2units = {'2K1': Unit(self.knightclass, 2, 7),
-                             '2K2': Unit(self.knightclass, 3, 7),
-                             '2K3': Unit(self.knightclass, 4, 7),
-                             '2K4': Unit(self.knightclass, 5, 7),
-                             '2A1': Unit(self.archerclass, 2, 6),
-                             '2A2': Unit(self.archerclass, 3, 6),
-                             '2A3': Unit(self.archerclass, 4, 6),
-                             '2C1': Unit(self.cavalierclass, 2, 5),
-                             '2C2': Unit(self.cavalierclass, 3, 5)}
+        self.unitclasses = {'Archer': UnitType( 'Archer', 2, 3, 50, 1, 1),
+                            'Cavalier': UnitType( 'Cavalier', 3, 1, 75, 3, 1),
+                            'Knight': UnitType( 'Knight', 1, 1, 100, 3, 3)}
+        self.player1units = {'1K1': Unit(self.unitclasses['Knight'], 2, 0),
+                             '1K2': Unit(self.unitclasses['Knight'], 3, 0),
+                             '1K3': Unit(self.unitclasses['Knight'], 4, 0),
+                             '1K4': Unit(self.unitclasses['Knight'], 5, 0),
+                             '1A1': Unit(self.unitclasses['Archer'], 2, 1),
+                             '1A2': Unit(self.unitclasses['Archer'], 3, 1),
+                             '1A3': Unit(self.unitclasses['Archer'], 4, 1),
+                             '1C1': Unit(self.unitclasses['Cavalier'], 2, 2),
+                             '1C2': Unit(self.unitclasses['Cavalier'], 3, 2)}
+        self.player2units = {'2K1': Unit(self.unitclasses['Knight'], 2, 7),
+                             '2K2': Unit(self.unitclasses['Knight'], 3, 7),
+                             '2K3': Unit(self.unitclasses['Knight'], 4, 7),
+                             '2K4': Unit(self.unitclasses['Knight'], 5, 7),
+                             '2A1': Unit(self.unitclasses['Archer'], 2, 6),
+                             '2A2': Unit(self.unitclasses['Archer'], 3, 6),
+                             '2A3': Unit(self.unitclasses['Archer'], 4, 6),
+                             '2C1': Unit(self.unitclasses['Cavalier'], 2, 5),
+                             '2C2': Unit(self.unitclasses['Cavalier'], 3, 5)}
         self.grid = Grid(screen)
         self.currentlySelectedUnit = None
         self.currentPlayer = 1
+        for x in self.player1units:
+            self.grid.tilelist[self.player1units[x].coordinate].occupied = True
+        for x in self.player2units:
+            self.grid.tilelist[self.player2units[x].coordinate].occupied = True
 
     def mouse_button_down( self, event ):
         self.mouse_down_pos = event.pos
@@ -249,15 +253,34 @@ class GamePlayScreen( GameMode ):
         def collides_down_and_up( r ):
             return r.collidepoint( self.mouse_down_pos ) and r.collidepoint( event.pos )
 
-        for x in self.player1units:
-            if collides_down_and_up(self.player1units[x].position_rect):
-                self.currentlySelectedUnit = x
-                print x
-
-        for x in self.player2units:
-            if collides_down_and_up(self.player2units[x].position_rect):
-                self.currentlySelectedUnit = x
-                print x
+        if self.currentlySelectedUnit == None:
+            if self.currentPlayer == 1:
+                for x in self.player1units:
+                    if collides_down_and_up(self.player1units[x].position_rect):
+                        self.currentlySelectedUnit = x
+                        print x
+            if self.currentPlayer == 2:
+                for x in self.player2units:
+                    if collides_down_and_up(self.player2units[x].position_rect):
+                        self.currentlySelectedUnit = x
+                        print x
+        elif self.currentlySelectedUnit != None:
+            if self.currentPlayer == 1:
+                for x in self.player1units:
+                    if collides_down_and_up(self.player1units[x].position_rect):
+                        self.currentlySelectedUnit = x
+                        print x
+                for x in self.player2units:
+                    if collides_down_and_up(self.player2units[x].position_rect):
+                        pass
+            if self.currentPlayer == 2:
+                for x in self.player2units:
+                    if collides_down_and_up(self.player2units[x].position_rect):
+                        self.currentlySelectedUnit = x
+                        print x
+                for x in self.player1units:
+                    if collides_down_and_up(self.player1units[x].position_rect):
+                        pass
 
     def key_down( self, event ):
         ## By default, quit when the escape key is pressed.

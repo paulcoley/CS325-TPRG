@@ -72,8 +72,26 @@ class Unit( pygame.sprite.Sprite):
                 pygame.sprite.Sprite.__init__(self)
 		self.currentHealth = utype.health
 		self.image = utype.image
+		self.coordinate_set((x, y))
 		self.position_set((x*100,y*100))
 		self.position_rect_set(Rect(self.position_get(), (100, 100)))
+		self.turnTaken = False
+
+        def coordinate_get( self ):
+                return self._coordinate
+
+        def coordinate_set( self, value ):
+                self._coordinate = value
+
+        coordinate = property(coordinate_get, coordinate_set)
+
+        def turnTaken_get( self ):
+                return self._turnTaken
+
+        def turnTaken_set( self, value ):
+                self._turnTaken = value
+
+        turnTaken = property(turnTaken_get, turnTaken_set)
 
         def position_get( self ):
                 return self._position
@@ -82,6 +100,14 @@ class Unit( pygame.sprite.Sprite):
                 self._position = value
 
         position = property(position_get, position_set)
+
+        def position_rect_get( self ):
+                return self._position_rect
+
+        def position_rect_set( self, value ):
+                self._position_rect = value
+
+        position_rect = property(position_rect_get, position_rect_set)
 
         def position_rect_get( self ):
                 return self._position_rect
