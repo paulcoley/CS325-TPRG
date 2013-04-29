@@ -36,7 +36,10 @@ class Grid( object ):
 class Tile( object ):
     def __init__( self ):
         self.terrain_set('Plains')
-        self.occupied_set(False)
+        if self.terrain_get() == 'Mountain':
+            self.occupied_set(True)
+        else:
+            self.occupied_set(False)
 
     def terrain_get( self ):
         return self._terrain

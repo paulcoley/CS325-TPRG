@@ -208,9 +208,9 @@ class StartScreen( GameMode ):
 class GamePlayScreen( GameMode ):
     def __init__( self, screen ):
         random.seed('Shadows of the Knight')
-        self.turn = 1
+        self.currentPlayer = 1
         self.font = pygame.font.Font(None, 26)
-        self.infotxt = self.font.render("Player " + str(self.turn) + "'s Turn",1,(10,10,10))
+        self.infotxt = self.font.render("Player " + str(self.currentPlayer) + "'s Turn",1,(10,10,10))
         self.imagedict = {'Archer': load_onlyimage( 'Archer_single.gif', -1 ),
                           'Cavalier': load_onlyimage( 'Cavalier_single.gif', -1 ),
                           'Knight': load_onlyimage( 'Knight_single.gif', -1 ),
@@ -228,7 +228,7 @@ class GamePlayScreen( GameMode ):
                              '1A2': Unit(self.unitclasses['Archer'], 3, 1),
                              '1A3': Unit(self.unitclasses['Archer'], 4, 1),
                              '1C1': Unit(self.unitclasses['Cavalier'], 2, 2),
-                             '1C2': Unit(self.unitclasses['Cavalier'], 3, 4)}
+                             '1C2': Unit(self.unitclasses['Cavalier'], 3, 2)}
         self.player2units = {'2K1': Unit(self.unitclasses['Knight'], 2, 7),
                              '2K2': Unit(self.unitclasses['Knight'], 3, 7),
                              '2K3': Unit(self.unitclasses['Knight'], 4, 7),
@@ -240,7 +240,6 @@ class GamePlayScreen( GameMode ):
                              '2C2': Unit(self.unitclasses['Cavalier'], 3, 5)}
         self.grid = Grid(screen)
         self.currentlySelectedUnit = None
-        self.currentPlayer = 1
         for x in self.player1units:
             self.grid.tilelist[self.player1units[x].coordinate].occupied = True
         for x in self.player2units:
@@ -257,10 +256,11 @@ class GamePlayScreen( GameMode ):
         def attack( attacker, defender ):
             #Work on this
             x1, x2, y1, y2 = attacker.coordinate[0], defender.coordinate[0], attacker.coordinate[1], defender.coordinate[1]
-            dist = math.floor(math.hypot(x2 - x1, y2 - y1))
+            dist = math.fabs(x2 - x1) + math.fabs(y2 - y1)
             if(dist <= self.unitclasses[attacker.unit_type].attackRange):
                 toHit = 100 #random.randint(1, 20) + self.unitclasses[attacker.unit_type].attack
                 toMiss = 0 #random.randint(1, 20) + self.unitclasses[defender.unit_type].defense
+                print dist
                 if toHit >= toMiss:
                     defender.currentHealth -= toHit
                     attacker.turnTaken = True
@@ -274,7 +274,22 @@ class GamePlayScreen( GameMode ):
                 print 'Not close enough'
 
         def move( mover ):
-            x, y = math.floor(self.mouse_down_pos[0]/100), math.floor(self.mouse_down_pos[1]/100)
+            x1, x2, y1, y2 = mover.coordinate[0], math.floor(self.mouse_down_pos[0]/100), mover.coordinate[1], math.floor(self.mouse_down_pos[1]/100)
+            dist = math.fabs(x2 - x1) + math.fabs(y2 - y1)
+            if self.grid.tilelist[(x2, y2)].occupied == True:
+                print 'Can\'t move there because occupied.'
+            elif self.unitclasses[mover.unit_type].movementRange < dist:
+                print 'Can\'t move there because too far.'
+            else:
+                print dist
+                self.grid.tilelist[mover.coordinate].occupied = False
+                mover.coordinate = (x2, y2)
+                self.grid.tilelist[mover.coordinate].occupied = True
+                mover.position = (x2*100, y2*100)
+                mover.position_rect.topleft = mover.position
+                mover.turnTaken = True
+                self.currentlySelectedUnit = None
+                
 
         if self.currentlySelectedUnit == None:
             if self.currentPlayer == 1:
@@ -321,16 +336,44 @@ class GamePlayScreen( GameMode ):
     def update( self, clock ):
         for k, v in self.player1units.items():
             if v.currentHealth < 1:
+                self.grid.tilelist[self.player1units[k].coordinate].occupied = False
                 del self.player1units[k]
 
         for k, v in self.player2units.items():
             if v.currentHealth < 1:
+                self.grid.tilelist[self.player2units[k].coordinate].occupied = False
                 del self.player2units[k]
+
+        if self.currentPlayer == 1:
+            takenATurn = 0
+            for k, v in self.player1units.items():
+                if v.turnTaken == True:
+                    takenATurn += 1
+            if takenATurn == len(self.player1units):
+                self.currentPlayer = 2
+                for x in self.player1units:
+                    self.player1units[x].turnTaken = False
+            if len(self.player2units) == 0:
+                print 'Player 1 Wins!'
+                self.quit()
+
+        if self.currentPlayer == 2:
+            takenATurn = 0
+            for k, v in self.player2units.items():
+                if v.turnTaken == True:
+                    takenATurn += 1
+            if takenATurn == len(self.player2units):
+                self.currentPlayer = 1
+                for x in self.player2units:
+                    self.player2units[x].turnTaken = False
+            if len(self.player1units) == 0:
+                print 'Player 2 Wins!'
+                self.quit()
 
     def draw(self, screen):
         screen.fill((255, 255, 255))
         self.grid.draw(screen, self.imagedict)
-        self.infotxt = self.font.render("Player " + str(self.turn) + "'s Turn",1,(10,10,10))
+        self.infotxt = self.font.render("Player " + str(self.currentPlayer) + "'s Turn",1,(10,10,10))
         for x in self.player1units:
             self.player1units[x].draw(screen, self.imagedict)
         for x in self.player2units:
