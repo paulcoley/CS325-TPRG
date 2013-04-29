@@ -1,4 +1,4 @@
-import pygame
+import pygame, math, random
 from utils import *
 from grid import *
 from units import *
@@ -207,6 +207,7 @@ class StartScreen( GameMode ):
 
 class GamePlayScreen( GameMode ):
     def __init__( self, screen ):
+        random.seed('Shadows of the Knight')
         self.turn = 1
         self.font = pygame.font.Font(None, 26)
         self.infotxt = self.font.render("Player " + str(self.turn) + "'s Turn",1,(10,10,10))
@@ -227,7 +228,7 @@ class GamePlayScreen( GameMode ):
                              '1A2': Unit(self.unitclasses['Archer'], 3, 1),
                              '1A3': Unit(self.unitclasses['Archer'], 4, 1),
                              '1C1': Unit(self.unitclasses['Cavalier'], 2, 2),
-                             '1C2': Unit(self.unitclasses['Cavalier'], 3, 2)}
+                             '1C2': Unit(self.unitclasses['Cavalier'], 3, 4)}
         self.player2units = {'2K1': Unit(self.unitclasses['Knight'], 2, 7),
                              '2K2': Unit(self.unitclasses['Knight'], 3, 7),
                              '2K3': Unit(self.unitclasses['Knight'], 4, 7),
@@ -253,39 +254,78 @@ class GamePlayScreen( GameMode ):
         def collides_down_and_up( r ):
             return r.collidepoint( self.mouse_down_pos ) and r.collidepoint( event.pos )
 
+        def attack( attacker, defender ):
+            #Work on this
+            x1, x2, y1, y2 = attacker.coordinate[0], defender.coordinate[0], attacker.coordinate[1], defender.coordinate[1]
+            dist = math.floor(math.hypot(x2 - x1, y2 - y1))
+            if(dist <= self.unitclasses[attacker.unit_type].attackRange):
+                toHit = 100 #random.randint(1, 20) + self.unitclasses[attacker.unit_type].attack
+                toMiss = 0 #random.randint(1, 20) + self.unitclasses[defender.unit_type].defense
+                if toHit >= toMiss:
+                    defender.currentHealth -= toHit
+                    attacker.turnTaken = True
+                    self.currentlySelectedUnit = None
+                    print 'Close enough'
+                else:
+                    attacker.turnTaken = True
+                    self.currentlySelectedUnit = None
+                    print 'Miss'
+            else:
+                print 'Not close enough'
+
+        def move( mover ):
+            x, y = math.floor(self.mouse_down_pos[0]/100), math.floor(self.mouse_down_pos[1]/100)
+
         if self.currentlySelectedUnit == None:
             if self.currentPlayer == 1:
                 for x in self.player1units:
-                    if collides_down_and_up(self.player1units[x].position_rect):
+                    if collides_down_and_up(self.player1units[x].position_rect) and self.player1units[x].turnTaken == False:
                         self.currentlySelectedUnit = x
                         print x
+                        return
             if self.currentPlayer == 2:
                 for x in self.player2units:
-                    if collides_down_and_up(self.player2units[x].position_rect):
+                    if collides_down_and_up(self.player2units[x].position_rect)  and self.player2units[x].turnTaken == False:
                         self.currentlySelectedUnit = x
                         print x
+                        return
         elif self.currentlySelectedUnit != None:
             if self.currentPlayer == 1:
                 for x in self.player1units:
-                    if collides_down_and_up(self.player1units[x].position_rect):
+                    if collides_down_and_up(self.player1units[x].position_rect) and self.player1units[x].turnTaken == False:
                         self.currentlySelectedUnit = x
                         print x
+                        return
                 for x in self.player2units:
                     if collides_down_and_up(self.player2units[x].position_rect):
-                        pass
+                        attack(self.player1units[self.currentlySelectedUnit], self.player2units[x])
+                        return
+                move(self.player1units[self.currentlySelectedUnit])
             if self.currentPlayer == 2:
                 for x in self.player2units:
-                    if collides_down_and_up(self.player2units[x].position_rect):
+                    if collides_down_and_up(self.player2units[x].position_rect) and self.player2units[x].turnTaken == False:
                         self.currentlySelectedUnit = x
                         print x
+                        return
                 for x in self.player1units:
                     if collides_down_and_up(self.player1units[x].position_rect):
-                        pass
+                        attack(self.player2units[self.currentlySelectedUnit], self.player1units[x])
+                        return
+                move(self.player2units[self.currentlySelectedUnit])
 
     def key_down( self, event ):
         ## By default, quit when the escape key is pressed.
         if event.key == K_ESCAPE:
             self.quit()
+
+    def update( self, clock ):
+        for k, v in self.player1units.items():
+            if v.currentHealth < 1:
+                del self.player1units[k]
+
+        for k, v in self.player2units.items():
+            if v.currentHealth < 1:
+                del self.player2units[k]
 
     def draw(self, screen):
         screen.fill((255, 255, 255))
