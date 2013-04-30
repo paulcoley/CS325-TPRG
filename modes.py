@@ -211,11 +211,11 @@ class GamePlayScreen( GameMode ):
         self.currentPlayer = 1
         self.font = pygame.font.Font(None, 26)
         self.infotxt = self.font.render("Player " + str(self.currentPlayer) + "'s Turn",1,(10,10,10))
-        self.imagedict = {'Archer': load_onlyimage( 'Archer_single.gif', -1 ),
-                          'Cavalier': load_onlyimage( 'Cavalier_single.gif', -1 ),
-                          'Knight': load_onlyimage( 'Knight_single.gif', -1 ),
+        self.imagedict = {'Archer': load_image_alpha_only( 'Archer_single.png' ),
+                          'Cavalier': load_image_alpha_only( 'Cavalier_single.png' ),
+                          'Knight': load_image_alpha_only( 'Knight_single.png' ),
                           'Forest': load_onlyimage( 'forest.png'),
-                          'Plains': load_onlyimage( 'plains.png'),
+                          'Plains': load_onlyimage( 'plains.jpg'),
                           'Mountain': load_onlyimage( 'mountain.png')}
         self.unitclasses = {'Archer': UnitType( 'Archer', 2, 3, 50, 1, 1),
                             'Cavalier': UnitType( 'Cavalier', 3, 1, 75, 3, 1),

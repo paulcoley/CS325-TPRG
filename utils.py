@@ -106,6 +106,24 @@ def load_image_alpha( name ):
     image = image.convert_alpha()
     return image, image.get_rect()
 
+def load_image_alpha_only( name ):
+    '''
+    Given a filename 'name' of an image with an alpha channel in the data directory,
+    loads the image and returns a pygame.Surface.
+    '''
+    
+    ## Find 'name' within the 'data' directory independent of
+    ## operating system path character.
+    fullname = os.path.join( 'data', name )
+    try:
+        image = pygame.image.load( fullname )
+    except pygame.error, message:
+        print 'Cannot load image:', fullname
+        raise SystemExit, message
+    
+    image = image.convert_alpha()
+    return image
+
 def extract_frames_from_spritesheet( sheet_rect, sprite_width, sprite_height, num_frames = None ):
     '''
     Given a sprite sheet rectangle 'sheet_rect' as a pygame.Rect,
