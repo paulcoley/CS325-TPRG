@@ -218,7 +218,8 @@ class GamePlayScreen( GameMode ):
                           'Plains': load_onlyimage( 'plains.jpg'),
                           'Mountain': load_onlyimage( 'mountain.png'),
                           'Player1': load_image_alpha_only('Player1_Color.png'),
-                          'Player2': load_image_alpha_only('Player2_Color.png')}
+                          'Player2': load_image_alpha_only('Player2_Color.png'),
+                          'Select': load_image_alpha_only('PlayerSelect_Color.png')}
         self.unitclasses = {'Archer': UnitType( 'Archer', 2, 3, 50, 1, 1),
                             'Cavalier': UnitType( 'Cavalier', 3, 1, 75, 3, 1),
                             'Knight': UnitType( 'Knight', 1, 1, 100, 3, 3)}
@@ -386,9 +387,13 @@ class GamePlayScreen( GameMode ):
         for x in self.player1units:
             self.player1units[x].draw(screen, self.imagedict)
             screen.blit(self.imagedict['Player1'], self.player1units[x].position)
+            if self.currentlySelectedUnit != None and self.currentPlayer == 1:
+                screen.blit(self.imagedict['Select'], self.player1units[self.currentlySelectedUnit].position)
         for x in self.player2units:
             self.player2units[x].draw(screen, self.imagedict)
             screen.blit(self.imagedict['Player2'], self.player2units[x].position)
+            if self.currentlySelectedUnit != None and self.currentPlayer == 2:
+                screen.blit(self.imagedict['Select'], self.player2units[self.currentlySelectedUnit].position)
         screen.blit(self.infotxt, (50, 30))
         pygame.display.flip()
 
