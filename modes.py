@@ -332,6 +332,13 @@ class GamePlayScreen( GameMode ):
         ## By default, quit when the escape key is pressed.
         if event.key == K_ESCAPE:
             self.quit()
+        if event.key == K_SPACE and self.currentlySelectedUnit != None:
+            if self.currentPlayer == 1:
+                self.player1units[self.currentlySelectedUnit].turnTaken = True
+                self.currentlySelectedUnit = None
+            if self.currentPlayer == 2:
+                self.player2units[self.currentlySelectedUnit].turnTaken = True
+                self.currentlySelectedUnit = None
 
     def update( self, clock ):
         for k, v in self.player1units.items():
