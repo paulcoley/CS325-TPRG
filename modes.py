@@ -216,7 +216,9 @@ class GamePlayScreen( GameMode ):
                           'Knight': load_image_alpha_only( 'Knight_single.png' ),
                           'Forest': load_onlyimage( 'forest.png'),
                           'Plains': load_onlyimage( 'plains.jpg'),
-                          'Mountain': load_onlyimage( 'mountain.png')}
+                          'Mountain': load_onlyimage( 'mountain.png'),
+                          'Player1': load_image_alpha_only('Player1_Color.png'),
+                          'Player2': load_image_alpha_only('Player2_Color.png')}
         self.unitclasses = {'Archer': UnitType( 'Archer', 2, 3, 50, 1, 1),
                             'Cavalier': UnitType( 'Cavalier', 3, 1, 75, 3, 1),
                             'Knight': UnitType( 'Knight', 1, 1, 100, 3, 3)}
@@ -229,15 +231,15 @@ class GamePlayScreen( GameMode ):
                              '1A3': Unit(self.unitclasses['Archer'], 4, 1),
                              '1C1': Unit(self.unitclasses['Cavalier'], 2, 2),
                              '1C2': Unit(self.unitclasses['Cavalier'], 3, 2)}
-        self.player2units = {'2K1': Unit(self.unitclasses['Knight'], 2, 7),
-                             '2K2': Unit(self.unitclasses['Knight'], 3, 7),
-                             '2K3': Unit(self.unitclasses['Knight'], 4, 7),
-                             '2K4': Unit(self.unitclasses['Knight'], 5, 7),
-                             '2A1': Unit(self.unitclasses['Archer'], 2, 6),
-                             '2A2': Unit(self.unitclasses['Archer'], 3, 6),
-                             '2A3': Unit(self.unitclasses['Archer'], 4, 6),
-                             '2C1': Unit(self.unitclasses['Cavalier'], 2, 5),
-                             '2C2': Unit(self.unitclasses['Cavalier'], 3, 5)}
+        self.player2units = {'2K1': Unit(self.unitclasses['Knight'], 2, 5),
+                             '2K2': Unit(self.unitclasses['Knight'], 3, 5),
+                             '2K3': Unit(self.unitclasses['Knight'], 4, 5),
+                             '2K4': Unit(self.unitclasses['Knight'], 5, 5),
+                             '2A1': Unit(self.unitclasses['Archer'], 2, 4),
+                             '2A2': Unit(self.unitclasses['Archer'], 3, 4),
+                             '2A3': Unit(self.unitclasses['Archer'], 4, 4),
+                             '2C1': Unit(self.unitclasses['Cavalier'], 2, 3),
+                             '2C2': Unit(self.unitclasses['Cavalier'], 3, 3)}
         self.grid = Grid(screen)
         self.currentlySelectedUnit = None
         for x in self.player1units:
@@ -258,8 +260,8 @@ class GamePlayScreen( GameMode ):
             x1, x2, y1, y2 = attacker.coordinate[0], defender.coordinate[0], attacker.coordinate[1], defender.coordinate[1]
             dist = math.fabs(x2 - x1) + math.fabs(y2 - y1)
             if(dist <= self.unitclasses[attacker.unit_type].attackRange):
-                toHit = 100 #random.randint(1, 20) + self.unitclasses[attacker.unit_type].attack
-                toMiss = 0 #random.randint(1, 20) + self.unitclasses[defender.unit_type].defense
+                toHit = random.randint(1, 20) + self.unitclasses[attacker.unit_type].attack
+                toMiss = random.randint(1, 20) + self.unitclasses[defender.unit_type].defense
                 print dist
                 if toHit >= toMiss:
                     defender.currentHealth -= toHit
@@ -383,8 +385,10 @@ class GamePlayScreen( GameMode ):
         self.infotxt = self.font.render("Player " + str(self.currentPlayer) + "'s Turn",1,(10,10,10))
         for x in self.player1units:
             self.player1units[x].draw(screen, self.imagedict)
+            screen.blit(self.imagedict['Player1'], self.player1units[x].position)
         for x in self.player2units:
             self.player2units[x].draw(screen, self.imagedict)
+            screen.blit(self.imagedict['Player2'], self.player2units[x].position)
         screen.blit(self.infotxt, (50, 30))
         pygame.display.flip()
 
