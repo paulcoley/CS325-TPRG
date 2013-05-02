@@ -151,7 +151,7 @@ class SplashScreen( GameMode ):
         '''
         Draw the splash screen.
         '''
-        screen.blit( self.image, ( 0,0 ) )
+        screen.blit( self.image, ( 100,0 ) )
         pygame.display.flip()
     
     def update( self, clock ):
@@ -179,8 +179,8 @@ class StartScreen( GameMode ):
         self.image, _ = load_image( 'start_screen.png' )
         self.start, self.start_rect = load_image_alpha( 'start.png' )
         self.quit, self.quit_rect = load_image_alpha( 'quit.png' )
-        self.start_rect.topleft = ( 271, 30 )
-        self.quit_rect.topleft = ( 255, 150 )
+        self.start_rect.topleft = ( 428, 250 )
+        self.quit_rect.topleft = ( 428, 350 )
         
         self.mouse_down_pos = (-1,-1)
     
@@ -197,12 +197,16 @@ class StartScreen( GameMode ):
         
         if collides_down_and_up( self.start_rect ):
             self.switch_to_mode( 'playing' )
+
+    def key_down( self, event ):
+        if event.key == K_ESCAPE:
+            self.quit()
     
     def draw( self, screen ):
         ## Draw the HUD.
-        screen.blit( self.image, ( 0,0 ) )
-        screen.blit( self.start, ( 271, 30 ) )
-        screen.blit( self.quit, ( 255, 150 ) )
+        screen.blit( self.image, ( 100, 0 ) )
+        screen.blit( self.start, ( 428, 250 ) )
+        screen.blit( self.quit, ( 428, 350 ) )
         pygame.display.flip()
 
 class GamePlayScreen( GameMode ):
