@@ -7,7 +7,7 @@ from pygame.locals import *
 
 class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
     def __init__( self, screen ):
-        random.seed('Shadows of the Knight') #Seed for the chance to hit and miss calculations
+        random.seed(None) #Seed for the chance to hit and miss calculations
         self.currentPlayer = 1 #Tracker for current player
         self.font = pygame.font.Font(None, 26) #Create font for drawing text on the screen
         self.playerturntxt = None
@@ -74,15 +74,16 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
 
         def move( mover ): #Takes care of the movement of a unit from grid tile to another.
             if self.mouse_down_pos[1] > self.height_limit:
-                print 'Invalid position'
+                self.actiontxt = self.font.render("Invalid position.",1,(10,10,10))
                 return
             x1, x2, y1, y2 = mover.coordinate[0], math.floor(self.mouse_down_pos[0]/100), mover.coordinate[1], math.floor(self.mouse_down_pos[1]/100)
             dist = math.fabs(x2 - x1) + math.fabs(y2 - y1)
             if self.grid.tilelist[(x2, y2)].occupied == True: #If a tile is occupied already, print the appropiate message.
-                print 'Can\'t move there because occupied.'
+                self.actiontxt = self.font.render("Can\'t move there because occupied.",1,(10,10,10))
             elif self.unitclasses[mover.unit_type].movementRange < dist: #If a tile is out of movement range, print an appropiate message.
-                print 'Can\'t move there because too far.'
+                self.actiontxt = self.font.render("Can\'t move there because too far.",1,(10,10,10))
             else: #If a tile is within movement range and the user selects it, move the unit to that position and mark that unit as having taken a turn.
+                self.actiontxt = self.font.render("Moved to (" + str(int(x2)) + ", " + str(int(y2)) + ")",1,(10,10,10))
                 self.grid.tilelist[mover.coordinate].occupied = False
                 mover.coordinate = (x2, y2)
                 self.grid.tilelist[mover.coordinate].occupied = True
@@ -95,13 +96,12 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
             for x in self.units:
                 if collides_down_and_up(self.units[x].position_rect) and self.units[x].turnTaken == False and self.units[x].owner == self.currentPlayer: #If conditions are met, the unit is selected and print out the unit id.
                     self.currentlySelectedUnit = x
-                    print x
+                    self.actiontxt = None
                     return
         elif self.currentlySelectedUnit != None: #If a unit is selected, check to see if a player clicks on a unit they own, the opposing player's unit, or on an empty tile.
             for x in self.units:
                 if collides_down_and_up(self.units[x].position_rect) and self.units[x].turnTaken == False and self.units[x].owner == self.currentPlayer: #If conditions are met, the unit is selected and print out the unit id.
                     self.currentlySelectedUnit = x
-                    print x
                     return
             for x in self.units: #If another unit is not selected, then check to see whther the current unit is being told to attack another unit. If so, execute the attack function.
                 if collides_down_and_up(self.units[x].position_rect) and self.units[x].owner != self.currentPlayer:
@@ -167,7 +167,11 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
                 self.border(screen, (255, 255, 0), self.units[self.currentlySelectedUnit].position)
         screen.blit(self.playerturntxt, (50, 630)) #Print who is the current player
         if self.currentlySelectedUnit != None:
-            self.unitselectedtxt = self.font.render("Currently Selected Unit: " + self.currentlySelectedUnit, 1, (10, 10, 10))
+            self.unitselectedtxt = self.font.render("Currently Selected Unit: " + self.currentlySelectedUnit +
+                                                    " - Health: " + str(self.units[self.currentlySelectedUnit].currentHealth) +
+                                                    " - Attack Roll: 1d20 + " + str(self.unitclasses[self.units[self.currentlySelectedUnit].unit_type].attack) +
+                                                    " - Defense Roll: 1d20 + " + str(self.unitclasses[self.units[self.currentlySelectedUnit].unit_type].defense),
+                                                    1, (10, 10, 10))
             screen.blit(self.unitselectedtxt, (50, 660)) #Print currently selected unit
         if self.actiontxt != None:
             screen.blit(self.actiontxt, (300, 630)) #Print last action
