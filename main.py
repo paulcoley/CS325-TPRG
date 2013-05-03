@@ -4,6 +4,7 @@ import os, pygame, json, random, time
 from pygame.locals import *
 from utils import *
 from modes import *
+from gameplay import *
 
 kDataDir = 'data'
 kGlobals = 'globals.json'
