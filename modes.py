@@ -4,7 +4,7 @@ from grid import *
 from units import *
 from pygame.locals import *
 
-class ModeManager( object ):
+class ModeManager( object ): #Game state code ripped from provided game state system
     '''
     A class that manages switching between modes.
     '''
@@ -45,7 +45,7 @@ class ModeManager( object ):
     def quitting( self ):
         return self.current_mode is kQuittingMode
 
-class GameMode( object ):
+class GameMode( object ): #Game state code ripped from provided game state system
     def __init__( self ):
         '''
         A base class for game modes.
@@ -119,7 +119,7 @@ class GameMode( object ):
         '''
         pass
 
-class SplashScreen( GameMode ):
+class SplashScreen( GameMode ): #Game state code ripped from provided game state system
     def __init__( self, image, duration_in_milliseconds, next_mode_name ):
         '''
         Given a duration to show the splash screen 'duration_in_milliseconds',
@@ -171,7 +171,7 @@ class SplashScreen( GameMode ):
         '''
         self.switch_to_mode( self.next_mode_name )
 
-class StartScreen( GameMode ):
+class StartScreen( GameMode ): #Game state code ripped from provided game state system and modified.
     def __init__( self ):
         ## Initialize the superclass.
         GameMode.__init__( self )
