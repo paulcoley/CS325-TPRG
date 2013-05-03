@@ -7,7 +7,7 @@ class Grid( object ):
         self.tilewidth = 100 #Width a grid tile
         self.tileheight = 100 #Height a grid tile
         self.gridwidth = screen.get_width()/self.tilewidth #Coordinate width of the grid
-        self.gridheight = screen.get_height()/self.tileheight #Coordinate width of the grid
+        self.gridheight = (screen.get_height() - 100)/self.tileheight #Coordinate width of the grid
         self.black = 0, 0, 0 #Color of the Grid lines
         self.tilelist = {} #List of grid tiles
         for x in range(0, self.gridwidth): #Fills out the list of tiles
@@ -20,9 +20,9 @@ class Grid( object ):
                 self.tilelist[(x, y)].draw(screen, (self.tilewidth*x, self.tileheight*y), imagedict)
         
         for x in range (1, self.gridwidth):
-            pygame.draw.line(screen, self.black, (self.tilewidth*x,0), (self.tilewidth*x, screen.get_height()))
+            pygame.draw.line(screen, self.black, (self.tilewidth*x,0), (self.tilewidth*x, screen.get_height() - 100))
 
-        for y in range (1, self.gridheight):
+        for y in range (1, self.gridheight + 1):
             pygame.draw.line(screen, self.black, (0,self.tileheight*y), (screen.get_width(), self.tileheight*y))
 
 class Tile( object ): # Stores properties of a tile that are then applied to the grid and units on them

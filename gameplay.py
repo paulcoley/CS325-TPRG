@@ -10,7 +10,9 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
         random.seed('Shadows of the Knight') #Seed for the chance to hit and miss calculations
         self.currentPlayer = 1 #Tracker for current player
         self.font = pygame.font.Font(None, 26) #Create font for drawing text on the screen
-        self.infotxt = self.font.render("Player " + str(self.currentPlayer) + "'s Turn",1,(10,10,10)) #Create render for drawing text that states the current player's turn
+        self.playerturntxt = None
+        self.unitselectedtxt = None
+        self.actiontxt = None
         self.imagedict = {'Archer': load_image_alpha_only( 'Archer_single.png' ), #Store images to be drawn in-game to be later called
                           'Cavalier': load_image_alpha_only( 'Cavalier_single.png' ),
                           'Knight': load_image_alpha_only( 'Knight_single.png' ),
@@ -40,6 +42,7 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
                       '2C2': Unit(self.unitclasses['Cavalier'], 3, 3, 2)}
         self.grid = Grid(screen) #Initialize the grid
         self.currentlySelectedUnit = None #Set the currently selected unit to none
+        self.height_limit = screen.get_height() - 100
         for x in self.units: #Set the coordinates of all units in the grid to have the occupied property
             self.grid.tilelist[self.units[x].coordinate].occupied = True
 
@@ -61,15 +64,18 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
                     defender.currentHealth -= toHit
                     attacker.turnTaken = True
                     self.currentlySelectedUnit = None
-                    print 'Damage = ' + str(toHit)
+                    self.actiontxt = self.font.render("Hit! The damage done is " + str(toHit) + ". The enemy unit's health is now " + str(defender.currentHealth) + ".",1,(10,10,10))
                 else: #If the Miss sum is higher than the Hit sum, no damage is taken by the defending unit and the attacking unit's turn ends.
                     attacker.turnTaken = True
                     self.currentlySelectedUnit = None
-                    print 'Miss'
+                    self.actiontxt = self.font.render("Miss! The attack failed to hit.",1,(10,10,10))
             else: #If a unit is not close enough to attack, print the appropiate message
-                print 'Not close enough'
+                self.actiontxt = self.font.render("This unit is not close enough to attack.",1,(10,10,10))
 
         def move( mover ): #Takes care of the movement of a unit from grid tile to another.
+            if self.mouse_down_pos[1] > self.height_limit:
+                print 'Invalid position'
+                return
             x1, x2, y1, y2 = mover.coordinate[0], math.floor(self.mouse_down_pos[0]/100), mover.coordinate[1], math.floor(self.mouse_down_pos[1]/100)
             dist = math.fabs(x2 - x1) + math.fabs(y2 - y1)
             if self.grid.tilelist[(x2, y2)].occupied == True: #If a tile is occupied already, print the appropiate message.
@@ -150,7 +156,7 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
     def draw( self, screen ): #Draw everything in the gameplay
         screen.fill((255, 255, 255))
         self.grid.draw(screen, self.imagedict) #Draw the grid
-        self.infotxt = self.font.render("Player " + str(self.currentPlayer) + "'s Turn",1,(10,10,10))
+        self.playerturntxt = self.font.render("Player " + str(self.currentPlayer) + "'s Turn",1,(10,10,10))
         for x in self.units: #Draw units in their appropiate places on the grid.
             self.units[x].draw(screen, self.imagedict)
             if self.units[x].owner == 1: #Player 1 is red
@@ -159,5 +165,10 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
                 self.border(screen, (0, 0, 255), self.units[x].position)
             if self.currentlySelectedUnit != None and self.units[x].owner == self.currentPlayer: #The currently selected unit is yellow.
                 self.border(screen, (255, 255, 0), self.units[self.currentlySelectedUnit].position)
-        screen.blit(self.infotxt, (50, 30)) #Print who is the current player
+        screen.blit(self.playerturntxt, (50, 630)) #Print who is the current player
+        if self.currentlySelectedUnit != None:
+            self.unitselectedtxt = self.font.render("Currently Selected Unit: " + self.currentlySelectedUnit, 1, (10, 10, 10))
+            screen.blit(self.unitselectedtxt, (50, 660)) #Print currently selected unit
+        if self.actiontxt != None:
+            screen.blit(self.actiontxt, (300, 630)) #Print last action
         pygame.display.flip()
