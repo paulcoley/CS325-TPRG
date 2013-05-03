@@ -68,14 +68,14 @@ class UnitType( object ):
         defense = property(defense_get, defense_set)
 
 class Unit( pygame.sprite.Sprite):
-	def __init__(self, utype, x, y):
-                pygame.sprite.Sprite.__init__(self)
-		self.currentHealth = utype.health
-		self.unit_type_set(utype.image)
-		self.coordinate_set((x, y))
-		self.position_set((x*100,y*100))
-		self.position_rect_set(Rect(self.position_get(), (100, 100)))
-		self.turnTaken = False
+    def __init__(self, utype, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.currentHealth = utype.health
+        self.unit_type_set(utype.image)
+        self.coordinate_set((x, y))
+        self.position_set((x*100,y*100))
+        self.position_rect_set(Rect(self.position_get(), (100, 100)))
+        self.turnTaken = False
 
         def coordinate_get( self ):
                 return self._coordinate
@@ -125,5 +125,5 @@ class Unit( pygame.sprite.Sprite):
 
         position_rect = property(position_rect_get, position_rect_set)
 
-	def draw(self, screen, imagedict):
+    def draw(self, screen, imagedict):
                 screen.blit(imagedict[self.unit_type_get()], self.position)

@@ -118,7 +118,7 @@ class GameMode( object ):
         Passed the screen pygame.Surface.
         '''
         pass
-		
+
 class SplashScreen( GameMode ):
     def __init__( self, image, duration_in_milliseconds, next_mode_name ):
         '''
