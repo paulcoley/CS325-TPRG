@@ -9,8 +9,10 @@ import pygame.mixer
 
 class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
     def __init__( self, screen ):
-        mainsoundloop = load_sound( 'SotKLoop1.wav' )
-        mainsoundloop.play(-1)
+        self.soundloops = (load_sound( 'SotKLoop1.wav' ),
+                      load_sound( 'SotKLoop2.wav' ),
+                      load_sound( 'SotKLoop3.wav' ))
+        self.soundloops[0].play(0) # always play this one first; it's iconic
         random.seed(None) #Seed for the chance to hit and miss calculations
         self.currentPlayer = 1 #Tracker for current player
         self.font = pygame.font.Font(None, 26) #Create font for drawing text on the screen
@@ -187,3 +189,7 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
         if self.actiontxt != None:
             screen.blit(self.actiontxt, (300, 630)) #Print last action
         pygame.display.flip()
+
+        # Grab another loop if mixer is silent
+        if not pygame.mixer.get_busy():
+            self.soundloops[random.randint(0,len(self.soundloops))].play(0)
