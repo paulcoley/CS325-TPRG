@@ -30,7 +30,7 @@ eliminate yours, and to do that, you need to know the units in your arsenal:
 
 Movement and attack ranges are measured in grid units, so any count of grid
 units per stat is ideal, assuming you are not attempting to move into an
-already occupied.
+already occupied space.
 
 Recommended Strategies:
 * Keep your Archers and Cavaliers away from Knights. Knights will tend to bunch
