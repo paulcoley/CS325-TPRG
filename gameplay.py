@@ -5,8 +5,12 @@ from units import *
 from modes import *
 from pygame.locals import *
 
+import pygame.mixer
+
 class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
     def __init__( self, screen ):
+        mainsoundloop = load_sound( 'SotKLoop1.wav' )
+        mainsoundloop.play(-1)
         random.seed(None) #Seed for the chance to hit and miss calculations
         self.currentPlayer = 1 #Tracker for current player
         self.font = pygame.font.Font(None, 26) #Create font for drawing text on the screen
@@ -153,7 +157,7 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
                                                 (position[0] + 100, position[1] + 100),
                                                 (position[0], position[1] + 100)], 3)
 
-    def drawMoveArea( self, screen, mover ):
+    def drawMoveArea( self, screen, mover ): #Draw green squares in the area that a selected unit can move.
         x1, y1 = mover.coordinate[0], mover.coordinate[1]
         for x in self.grid.tilelist:
             x2, y2 = x[0], x[1]
