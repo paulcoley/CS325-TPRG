@@ -26,24 +26,22 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
         self.unitclasses = {'Archer': UnitType( 'Archer', 2, 3, 50, 1, 1),
                             'Cavalier': UnitType( 'Cavalier', 3, 1, 75, 3, 1),
                             'Knight': UnitType( 'Knight', 1, 1, 100, 3, 3)}
-        self.units = {'1K1': Unit(self.unitclasses['Knight'], 2, 0, 1), #Create one list of units that stores all the units for both players
-                      '1K2': Unit(self.unitclasses['Knight'], 3, 0, 1),
-                      '1K3': Unit(self.unitclasses['Knight'], 4, 0, 1),
-                      '1K4': Unit(self.unitclasses['Knight'], 5, 0, 1),
-                      '1A1': Unit(self.unitclasses['Archer'], 2, 1, 1),
-                      '1A2': Unit(self.unitclasses['Archer'], 3, 1, 1),
-                      '1A3': Unit(self.unitclasses['Archer'], 4, 1, 1),
+        self.units = {'1K1': Unit(self.unitclasses['Knight'], 0, 1, 1), #Create one list of units that stores all the units for both players
+                      '1K2': Unit(self.unitclasses['Knight'], 0, 2, 1),
+                      '1K3': Unit(self.unitclasses['Knight'], 0, 3, 1),
+                      '1K4': Unit(self.unitclasses['Knight'], 0, 4, 1),
+                      '1A1': Unit(self.unitclasses['Archer'], 1, 2, 1),
+                      '1A2': Unit(self.unitclasses['Archer'], 1, 3, 1),
                       '1C1': Unit(self.unitclasses['Cavalier'], 2, 2, 1),
-                      '1C2': Unit(self.unitclasses['Cavalier'], 3, 2, 1),
-                      '2K1': Unit(self.unitclasses['Knight'], 2, 5, 2),
-                      '2K2': Unit(self.unitclasses['Knight'], 3, 5, 2),
-                      '2K3': Unit(self.unitclasses['Knight'], 4, 5, 2),
-                      '2K4': Unit(self.unitclasses['Knight'], 5, 5, 2),
-                      '2A1': Unit(self.unitclasses['Archer'], 2, 4, 2),
-                      '2A2': Unit(self.unitclasses['Archer'], 3, 4, 2),
-                      '2A3': Unit(self.unitclasses['Archer'], 4, 4, 2),
-                      '2C1': Unit(self.unitclasses['Cavalier'], 2, 3, 2),
-                      '2C2': Unit(self.unitclasses['Cavalier'], 3, 3, 2)}
+                      '1C2': Unit(self.unitclasses['Cavalier'], 2, 3, 1),
+                      '2K1': Unit(self.unitclasses['Knight'], 9, 1, 2),
+                      '2K2': Unit(self.unitclasses['Knight'], 9, 2, 2),
+                      '2K3': Unit(self.unitclasses['Knight'], 9, 3, 2),
+                      '2K4': Unit(self.unitclasses['Knight'], 9, 4, 2),
+                      '2A1': Unit(self.unitclasses['Archer'], 8, 2, 2),
+                      '2A2': Unit(self.unitclasses['Archer'], 8, 3, 2),
+                      '2C1': Unit(self.unitclasses['Cavalier'], 7, 2, 2),
+                      '2C2': Unit(self.unitclasses['Cavalier'], 7, 3, 2)}
         self.grid = Grid(screen) #Initialize the grid
         self.currentlySelectedUnit = None #Set the currently selected unit to none
         self.height_limit = screen.get_height() - 100
@@ -63,7 +61,7 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
             dist = math.fabs(x2 - x1) + math.fabs(y2 - y1) #Calculates the distance on the grid between both units
             if(dist <= self.unitclasses[attacker.unit_type].attackRange): # If a unit is close enough to attack, caluclate whether or not the attack is sucessful
                 toHit = random.randint(1, 20) + self.unitclasses[attacker.unit_type].attack
-                toMiss = random.randint(1, 20) + self.unitclasses[defender.unit_type].defense
+                toMiss = random.randint(1, 20) + self.unitclasses[defender.unit_type].defense - 10
                 if toHit >= toMiss: #If the Hit sum is higher than the Miss sum, subtract the hit sum from the health of the defending unit and end the attacking unit's turn
                     defender.currentHealth -= toHit
                     attacker.turnTaken = True
