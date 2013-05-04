@@ -67,7 +67,7 @@ in favor of pre-determined armies to force an even footing of forces. Also a gri
 replacing the linear movement of the initial version of the game. New royalty free art from opengameart.org has replaced
 the original sprites to avoid copyright issues that might have otherwise arose in the future.  Units
 now have borders around the grid space they occupy to differentiate opposing players.  In addition selected
-units now also have a yellow border to aid in player feedback.  Also instead of a purely numerical representation
+units now also have a green border to aid in player feedback.  Also instead of a purely numerical representation
 of unit health the individual units have health bars.  The actual combat statistics and logic has not
 changed from the initial version as it remains fairly balanced in a mass combat setting.  Background music has
 been added as well that was customly created for this project.
@@ -84,3 +84,4 @@ The current unit types and stats:
                                                                 but can be harried by faster units.
 Current credits to be mentioned
   opengameart.org  Royalty free art website that the current art assets are pulled from.
+  cgtextures.com  Royalty free texture webste where terrain assets are being pulled from.

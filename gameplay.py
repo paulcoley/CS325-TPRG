@@ -153,6 +153,14 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
                                                 (position[0] + 100, position[1] + 100),
                                                 (position[0], position[1] + 100)], 3)
 
+    def drawMoveArea( self, screen, mover ):
+        x1, y1 = mover.coordinate[0], mover.coordinate[1]
+        for x in self.grid.tilelist:
+            x2, y2 = x[0], x[1]
+            dist = math.fabs(x2 - x1) + math.fabs(y2 - y1)
+            if self.unitclasses[mover.unit_type].movementRange >= dist and self.grid.tilelist[x].occupied != True:
+                self.border(screen, (0, 255, 0), (x2*100,y2*100))
+
     def draw( self, screen ): #Draw everything in the gameplay
         screen.fill((255, 255, 255))
         self.grid.draw(screen, self.imagedict) #Draw the grid
@@ -165,6 +173,7 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
                 self.border(screen, (0, 0, 255), self.units[x].position)
             if self.currentlySelectedUnit != None and self.units[x].owner == self.currentPlayer: #The currently selected unit is yellow.
                 self.border(screen, (0, 255, 0), self.units[self.currentlySelectedUnit].position)
+                self.drawMoveArea(screen, self.units[self.currentlySelectedUnit])
         screen.blit(self.playerturntxt, (50, 630)) #Print who is the current player
         if self.currentlySelectedUnit != None:
             self.unitselectedtxt = self.font.render("Currently Selected Unit: " + self.currentlySelectedUnit +
