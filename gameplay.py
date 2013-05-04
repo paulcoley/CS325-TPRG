@@ -151,7 +151,7 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
         pygame.draw.lines(screen, color, True, [(position),
                                                 (position[0] + 100, position[1]),
                                                 (position[0] + 100, position[1] + 100),
-                                                (position[0], position[1] + 100)])
+                                                (position[0], position[1] + 100)], 3)
 
     def draw( self, screen ): #Draw everything in the gameplay
         screen.fill((255, 255, 255))
@@ -159,12 +159,12 @@ class GamePlayScreen( GameMode ): #Responsible for all gameplay in the game
         self.playerturntxt = self.font.render("Player " + str(self.currentPlayer) + "'s Turn",1,(10,10,10))
         for x in self.units: #Draw units in their appropiate places on the grid.
             self.units[x].draw(screen, self.imagedict)
-            if self.units[x].owner == 1: #Player 1 is red
-                self.border(screen, (255, 0, 0), self.units[x].position)
-            if self.units[x].owner == 2: #Player 2 is blue
+            if self.units[x].owner == 1 and self.units[x].turnTaken == False and self.currentPlayer == 1: #Player 1 is red
+                self.border(screen, (255, 255, 0), self.units[x].position)
+            if self.units[x].owner == 2 and self.units[x].turnTaken == False and self.currentPlayer == 2: #Player 2 is blue
                 self.border(screen, (0, 0, 255), self.units[x].position)
             if self.currentlySelectedUnit != None and self.units[x].owner == self.currentPlayer: #The currently selected unit is yellow.
-                self.border(screen, (255, 255, 0), self.units[self.currentlySelectedUnit].position)
+                self.border(screen, (0, 255, 0), self.units[self.currentlySelectedUnit].position)
         screen.blit(self.playerturntxt, (50, 630)) #Print who is the current player
         if self.currentlySelectedUnit != None:
             self.unitselectedtxt = self.font.render("Currently Selected Unit: " + self.currentlySelectedUnit +
